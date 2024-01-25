@@ -1,16 +1,13 @@
-import 'package:e_commerce/features/signUp/data/models/request_data.dart';
-import 'package:e_commerce/features/signUp/domain/entities/UserEntity.dart';
+import 'package:e_commerce/features/signup/domain/repositories/signup_repo.dart';
 
-import '../repo_domain/signUpRepo.dart';
+import '../../data/models/request_data.dart';
+import '../entities/UserEntity.dart';
 
-class SignUpUseCase{
+class SignUpUseCase {
+  SignupRepo signupRepo;
 
- SignUpRepo signUpRepo ;
+  SignUpUseCase(this.signupRepo);
 
-
-
- SignUpUseCase(this.signUpRepo);
-
- Future<UserEntity>Call(RequestData requestData) => signUpRepo.signUp( requestData);
-
+  Future< UserEntity> call(RequestData requestData) =>
+      signupRepo.signUp(requestData);
 }

@@ -2,7 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:e_commerce/core/utils/constant.dart';
 
 class ApiManager {
-  Dio dio = Dio();
+ late Dio dio ;
+
+
+ ApiManager(){
+   dio=Dio();
+}
 
    Future<Response> getData({required String endPoint, required Map<String, dynamic> data}) {
     return dio.get(Constant.baseUrl + endPoint, queryParameters: data);

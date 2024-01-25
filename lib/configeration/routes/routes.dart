@@ -1,13 +1,16 @@
 import 'package:e_commerce/features/home/presentation/pages/home_screen.dart';
 import 'package:e_commerce/features/login/presentation/pages/login.dart';
-import 'package:e_commerce/features/signUp/presentation/pages/signUpScreen.dart';
+import 'package:e_commerce/features/splash/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../features/signup/presentation/pages/signup.dart';
+
 class AppRoutes {
-   static const String login = "/";
-  static const String signUp = "signUp";
+   static const String login = "login";
+  static const String signUp = "Sign";
   static const String home = "home";
+  static const String splash = "/";
 }
 
 class Routes {
@@ -17,6 +20,8 @@ class Routes {
         return MaterialPageRoute(
           builder: (context) => LoginScreen(),
         );
+      case AppRoutes.splash:
+        return MaterialPageRoute(builder: (context) => SplashScreen());
       case AppRoutes.signUp:
         return MaterialPageRoute(
           builder: (context) => SignUpScreen(),

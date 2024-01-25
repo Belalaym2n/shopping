@@ -3,7 +3,7 @@ class RequestData {
   String email;
   String password;
   String rePassword;
-  int phone;
+  String phone;
 
   RequestData(
       {required this.name,
@@ -12,13 +12,13 @@ class RequestData {
       required this.rePassword,
       required this.phone});
 
-  Map<String,dynamic>toJson(){
+  Map<String, dynamic> toJson() {
     return {
       "name": name,
-      "email":email,
-      "password":password,
-      "rePassword":rePassword,
-      "phone":phone
+      "email": email,
+      "password": password,
+      "rePassword": rePassword,
+      "phone": phone
     };
   }
 }

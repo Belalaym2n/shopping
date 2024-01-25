@@ -1,21 +1,26 @@
-class UserEntity {
+
+class UserEntity  {
   UserEntity({
     this.user,
     this.token,
   });
 
-  UserEntityData? user;
+  UserDataEntity? user;
   String? token;
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [user, token];
 }
 
-class UserEntityData {
-  UserEntityData({
+class UserDataEntity  {
+  UserDataEntity({
     this.name,
     this.email,
   });
 
-
   String? name;
   String? email;
+
 
 }

@@ -1,7 +1,7 @@
-import 'package:e_commerce/features/signUp/data/models/UserModel.dart';
-import 'package:e_commerce/features/signUp/data/models/request_data.dart';
+import 'package:e_commerce/features/signup/data/models/UserModel.dart';
 
- abstract class RemoteDataSource{
+import '../../models/request_data.dart';
 
- Future<UserModel> signUP(RequestData requestData);
+abstract class RemoteDataSource {
+  Future< UserModel> signUp(RequestData requestData);
 }

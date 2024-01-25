@@ -1,4 +1,5 @@
-import 'package:e_commerce/features/signUp/domain/entities/UserEntity.dart';
+
+import 'package:e_commerce/features/signup/domain/entities/UserEntity.dart';
 
 class UserModel extends UserEntity {
   UserModel({
@@ -14,9 +15,12 @@ class UserModel extends UserEntity {
   }
 
   String? message;
+
+  @override
+  List<Object?> get props => [super.props, message];
 }
 
-class User extends UserEntityData {
+class User extends UserDataEntity {
   User({
     super.name,
     super.email,
@@ -30,4 +34,6 @@ class User extends UserEntityData {
   }
 
   String? role;
+
+
 }
