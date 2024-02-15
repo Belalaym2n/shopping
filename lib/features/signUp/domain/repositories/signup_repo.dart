@@ -1,8 +1,9 @@
+import 'package:dartz/dartz.dart';
 
-import 'package:e_commerce/features/signup/domain/entities/UserEntity.dart';
-
+import '../../../../core/error/failuers.dart';
 import '../../data/models/request_data.dart';
+import '../entities/UserEntity.dart';
 
 abstract class SignupRepo {
-  Future< UserEntity> signUp(RequestData requestData);
+  Future<Either<Failures, UserEntity>> signUp(RequestData requestData);
 }

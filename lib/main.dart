@@ -1,34 +1,42 @@
 import 'package:bloc/bloc.dart';
-import 'package:e_commerce/configeration/routes/routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'config/routes/routes.dart';
+import 'core/cache/shared_pref.dart';
 import 'core/utils/observer.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await CacheData.init();
   Bloc.observer = MyBlocObserver();
-  runApp(const MyApp());
+  String start;
+  String? token = await CacheData.getData("token");
+  if (token == null) {
+    start = "/";
+  } else {
+    start = "home";
+  }
+  runApp(MyApp(start));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  String start;
 
-  // This widget is the root of your application.
+  MyApp(this.start, {super.key});
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-
       designSize: const Size(430, 932),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: (context, child) =>  MaterialApp(
-
+      builder: (context, child) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        initialRoute: "/",
+        initialRoute: start,
         onGenerateRoute: (settings) => Routes.onGenerate(settings),
-
       ),
     );
   }
 }
-

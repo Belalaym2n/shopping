@@ -3,7 +3,7 @@ class AppStrings {
   static const String PleaseSignIn = "Please sign in with your mail";
   static const String Username = "User Name";
   static const String Password = "Password";
-  static const String entername = "enter your full name";
+  static const String entername = "enter your name";
   static const String enterpassword = "enter your password";
   static const String errorloginuser = "please enter your name";
   static const String errorloginpassword = "please enter your password";
@@ -14,10 +14,6 @@ class AppStrings {
   static const String Mobile = "Mobile Number";
   static const String Email = "E-mail address";
   static const String SignUp = "Sign up";
-  static const String  CreateAccount = "Create Account";
-  static const String  Categories = " Categories";
-  static const String  HomeAppliance = " Home Appliance";
-  static const String   SearchHint= "what do you search for?";
 
   static const String EnterFullname = "enter your full name";
   static const String entermobile = "enter your mobile no.";

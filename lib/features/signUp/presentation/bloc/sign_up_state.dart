@@ -10,16 +10,17 @@ enum ScreenStatus {
 class SignUpState {
   final ScreenStatus? screenStatus;
   final UserEntity? userEntity;
+  final Failures? failures;
 
-  SignUpState({this.screenStatus, this.userEntity});
+  SignUpState({this.screenStatus, this.userEntity, this.failures});
 
   SignUpState copyWith(
       {ScreenStatus? screenStatus,
       UserEntity? userEntity,
-      }) {
+      Failures? failures}) {
     return SignUpState(
         screenStatus: screenStatus ?? this.screenStatus,
-
+        failures: failures ?? this.failures,
         userEntity: userEntity ?? this.userEntity);
   }
 }

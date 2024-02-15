@@ -1,95 +1,161 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:e_commerce/core/utils/app_colors.dart';
-import 'package:e_commerce/core/utils/app_images.dart';
-import 'package:e_commerce/core/utils/app_strings.dart';
-import 'package:e_commerce/core/utils/fonts.dart';
-import 'package:e_commerce/features/home/presentation/widgets/taps/home_tap/appliance.dart';
-import 'package:e_commerce/features/home/presentation/widgets/taps/home_tap/carsoulSlider.dart';
-import 'package:e_commerce/features/home/presentation/widgets/taps/home_tap/catItem.dart';
-import 'package:e_commerce/features/home/presentation/widgets/taps/home_tap/search_item.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
+import '../../../../core/api/api_manager.dart';
+import '../../../../core/utils/app_colors.dart';
+import '../../../product_list/presentation/bloc/product_list_bloc.dart';
+import '../../../product_list/presentation/pages/product_list.dart';
+import '../../data/data_sources/home_remote_ds_impl.dart';
+import '../../data/repositories/home_repo_impl.dart';
+import '../../domain/use_cases/add_to_cart_usecase.dart';
+import '../../domain/use_cases/get_brands_use_case.dart';
+import '../../domain/use_cases/get_category_use_case.dart';
+import '../bloc/home_bloc.dart';
+import '../tabs/fav_tab.dart';
+import '../tabs/home.dart';
+import '../tabs/profile_tab.dart';
 
-class _HomeScreenState extends State<HomeScreen> {
-  int index=0;
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leadingWidth: 90.w,
-        elevation: 0,
-        backgroundColor:Colors.transparent,
-        leading: Image.asset(
-          AppImages.routeImage,
-        ),
-      ),
-      bottomNavigationBar:
-      BottomNavigationBar(
-
-
-
-         currentIndex: index,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: AppColors.BackGround,
-          onTap: (value) {
-           index=value;
-           setState(() {
-
-           });
-
-          },
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.grey,
-
-          items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home,)
-
-        , label: ""),
-        BottomNavigationBarItem(icon: Icon(Icons.favorite,),label: "",),
-        BottomNavigationBarItem(icon: Icon(Icons.person,),label: ""),
-
-        BottomNavigationBarItem(icon: Icon(Icons.apps,), label: ""),
-      ]),
-      body: Padding(
-        padding: const EdgeInsets.all(13.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            searchItem(),
-              carsoulSlider(),
-              Text(
-                AppStrings.Categories,
-                style: Fonts.medium.copyWith(
-                  color: AppColors.primary,
-
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => HomeBloc(
+                GetBrandsUseCase(
+                  HomeRepoImpl(
+                    HomeRemoteDSImpl(
+                      ApiManager(),
+                    ),
+                  ),
                 ),
-                textAlign: TextAlign.start,
+                GetCategoryUseCase(
+                  HomeRepoImpl(
+                    HomeRemoteDSImpl(
+                      ApiManager(),
+                    ),
+                  ),
+                ),
+                AddCartUseCase(
+                  HomeRepoImpl(
+                    HomeRemoteDSImpl(
+                      ApiManager(),
+                    ),
+                  ),
+                ))
+              ..add(HomeGetCategoryEvent())
+              ..add(HomeGetBrandsEvent())),
+        BlocProvider(
+          create: (context) => ProductListBloc()..add(GetAllProducts()),
+        )
+      ],
+      child: BlocConsumer<HomeBloc, HomeState>(
+        listener: (context, state) {
+          if (state.type == ScreenType.brandsError ||
+              state.type == ScreenType.categoryFailures) {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: Text("Error"),
+                content: Text(state.failures?.message ?? ""),
               ),
-              catItem(),
-
-              Text(AppStrings.HomeAppliance,style: Fonts.medium.copyWith(
-                color: AppColors.primary
-              ),),
-              SizedBox(
-                height: 10.h,
+            );
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              elevation: 0,
+              leadingWidth: 83.w,
+              leading: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: SvgPicture.asset('assets/images/route.svg'),
               ),
-              appliance()
-
-            ],
-          ),
-        ),
+            ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: HomeBloc.get(context).index,
+              onTap: (value) {
+                HomeBloc.get(context).add(HomeChangeNavBarEvent(value));
+              },
+              backgroundColor: AppColors.BackGround,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.grey,
+              items: [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: ""),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.production_quantity_limits_rounded),
+                    label: ""),
+                BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ""),
+                BottomNavigationBarItem(icon: Icon(Icons.person), label: ""),
+              ],
+            ),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                              contentPadding:
+                                  EdgeInsets.symmetric(vertical: 5.h),
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Color(0xFF004182)),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: Color(0xFF004182)),
+                                borderRadius: BorderRadius.circular(25),
+                              ),
+                              prefixIcon: Icon(
+                                Icons.search,
+                                color: Color(0xFF06004E),
+                              ),
+                              hintText: 'what do you search for?',
+                              hintStyle: TextStyle(
+                                color: Color(0x9906004E),
+                                fontSize: 14.sp,
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w300,
+                              )),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          HomeBloc.get(context)
+                              .add(AddToCartEvent("6428ebc6dc1175abc65ca0b9"));
+                        },
+                        child: Icon(
+                          Icons.shopping_cart,
+                          size: 30.0.sp,
+                          color: Color(0xff004182),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                Expanded(child: tabs[HomeBloc.get(context).index]),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
+
+  List<Widget> tabs = [HomeTab(), ProductListScreen(),FavTab(), ProfileTab()];
 }

@@ -1,15 +1,16 @@
-import 'package:e_commerce/core/api/api_manager.dart';
-import 'package:e_commerce/features/signup/data/data_sources/remote/remote_ds.dart';
-import 'package:e_commerce/features/signup/data/data_sources/remote/remote_ds_impl.dart';
-import 'package:e_commerce/features/signup/data/models/request_data.dart';
-import 'package:e_commerce/features/signup/data/repositories/signup_repo_impl.dart';
-import 'package:e_commerce/features/signup/domain/entities/UserEntity.dart';
-import 'package:e_commerce/features/signup/domain/repositories/signup_repo.dart';
-import 'package:e_commerce/features/signup/domain/use_cases/signup_usecase.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
+import '../../../../core/api/api_manager.dart';
+import '../../../../core/error/failuers.dart';
+import '../../data/data_sources/remote/remote_ds.dart';
+import '../../data/data_sources/remote/remote_ds_impl.dart';
+import '../../data/models/request_data.dart';
+import '../../data/repositories/signup_repo_impl.dart';
+import '../../domain/entities/UserEntity.dart';
+import '../../domain/repositories/signup_repo.dart';
+import '../../domain/use_cases/signup_usecase.dart';
 
 part 'sign_up_event.dart';
 
@@ -29,17 +30,21 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         SignupRepo signupRepo = SignUpRepoImpl(remoteDataSource);
         SignUpUseCase signUpUseCase = SignUpUseCase(signupRepo);
         RequestData requestData = RequestData(
-            name: "Mohamed",
-            email: "Mohamed24544@gmail.com",
+            name: "belal",
+            email: "belal1424@gmail.com",
             password: "123@Hamouda",
             rePassword: "123@Hamouda",
             phone: "01110944558");
 
         var result = await signUpUseCase.call(requestData);
 
-
+        result.fold((l) {
           emit(
-              state.copyWith(screenStatus: ScreenStatus.successfully));
+              state.copyWith(screenStatus: ScreenStatus.failures, failures: l));
+        }, (r) {
+          emit(state.copyWith(
+              screenStatus: ScreenStatus.successfully, userEntity: r));
+        });
       }
     });
   }
